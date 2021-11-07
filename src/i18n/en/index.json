@@ -1,0 +1,10 @@
+{
+  "HELLO_MESSAGE": "Hello {username}",
+  "SUCCESS_MESSAGE": {
+    "SUCCESS": "Success"
+  },
+  "ERROR_MESSAGE": {
+    "INTERNAL_ERROR": "Internal server error",
+    "NOT_FOUND": "Data not found"
+  }
+}

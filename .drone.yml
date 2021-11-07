@@ -1,0 +1,58 @@
+kind: pipeline
+name: default
+type: docker #kubernetes
+
+# anchors:
+#   - &drone-environment
+#     VERSION: 'master-42'
+
+steps:
+  - name: test
+    image: alpine
+    environment:
+      VERSION: 123545
+    commands:
+      - echo "aom test naja!"
+
+  - name: build-master
+    image: node:12.20.0-alpine
+    environment:
+      PORT: '3000'
+      TZ: 'Asia/Bangkok'
+    commands:
+      - apk add tzdata
+      - yarn
+      - yarn build
+      - yarn run test
+    when:
+      event:
+        - push
+      branch:
+        - master
+
+  # - name: clone
+  #   image: drone/git
+  #   when:
+  #     event:
+  #       - push
+  #     branch:
+  #       - master
+  #       - staging
+  #       - dev
+
+  # - name: notify
+  #   image: plugins/slack
+  #   settings:
+  #     webhook: https://hooks.slack.com/services/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
+  #     channel: dev
+  #     username: Drone
+  #     template: >
+  #       {{#success build.status}}
+  #         {{repo.name}} ({{build.branch}}) <{{ build.link }}|{{ repo.owner }}/{{ repo.name }}#{{truncate build.commit 8}}> build #{{build.number}} succeeded on {{uppercasefirst build.event}}. Good job test {{ build.author }}. 👍🏻
+  #       {{else}}
+  #         {{repo.name}} ({{build.branch}}) <{{ build.link }}|{{ repo.owner }}/{{ repo.name }}#{{truncate build.commit 8}}> build #{{build.number}} failed on {{uppercasefirst build.event}}. Fix me please test {{ build.author }}. 😢
+  #       {{/success}}
+  #   when:
+  #     status:
+  #     - failure
+  #     - success
